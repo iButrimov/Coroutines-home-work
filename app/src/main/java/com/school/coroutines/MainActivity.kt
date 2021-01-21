@@ -1,4 +1,4 @@
-package com.school.rxhomework
+package com.school.coroutines
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.annotations.SerializedName
-import com.school.rxhomework.databinding.ActivityMainBinding
-import com.school.rxhomework.databinding.ItemHolderBinding
+import com.school.coroutines.databinding.ActivityMainBinding
+import com.school.coroutines.databinding.ItemHolderBinding
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.school.rxhomework
+package com.school.coroutines
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

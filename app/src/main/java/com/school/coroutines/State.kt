@@ -1,4 +1,4 @@
-package com.school.rxhomework
+package com.school.coroutines
 
 sealed class State {
     object Loading : State()

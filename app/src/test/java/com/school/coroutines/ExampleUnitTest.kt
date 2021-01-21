@@ -1,4 +1,4 @@
-package com.school.rxhomework
+package com.school.coroutines
 
 import org.junit.Test
 

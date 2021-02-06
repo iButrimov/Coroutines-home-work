@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            root.setOnRefreshListener { viewModel.processAction(Action.RefreshData) }
+            //root.setOnRefreshListener { viewModel.processAction(Action.RefreshData) }
+            root.setOnRefreshListener { viewModel.refreshData() }
         }
     }
 

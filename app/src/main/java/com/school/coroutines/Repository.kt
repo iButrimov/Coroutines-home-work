@@ -2,20 +2,20 @@ package com.school.coroutines
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
 object Repository {
 
-    fun getPosts(callBack: Callback<List<MainActivity.Adapter.Item>>) = NetworkSource.getPosts(callBack)
+    suspend fun getPosts() = NetworkSource.getPosts()
 
     object NetworkSource {
         private interface IPostApi {
             @GET("/posts")
-            fun getPosts(): Call<List<MainActivity.Adapter.Item>>
+            //fun getPosts(): Call<List<MainActivity.Adapter.Item>>
+            suspend fun getPosts(): Response<List<MainActivity.Adapter.Item>>
         }
 
         private val okHttpClient = OkHttpClient.Builder()
@@ -32,6 +32,6 @@ object Repository {
 
         private val postApi = retrofit.create(IPostApi::class.java)
 
-        fun getPosts(callBack: Callback<List<MainActivity.Adapter.Item>>) = postApi.getPosts().enqueue(callBack)
+        suspend fun getPosts() = postApi.getPosts()
     }
 }

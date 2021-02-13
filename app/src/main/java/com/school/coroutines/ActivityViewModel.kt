@@ -18,15 +18,23 @@ class ActivityViewModel : ViewModel() {
 
     fun refreshData() {
 
-        val exHandler = CoroutineExceptionHandler { _, _ ->
-            _state.value = State.Loaded(emptyList())
+        val exHandler = CoroutineExceptionHandler { _, ex ->
+            ex.printStackTrace()
+            //_state.value = State.Loaded(emptyList())
         }
 
-        viewModelScope.launch (exHandler) {
-            val response : Response<List<MainActivity.Adapter.Item>> = Repository.getPosts()
-            if(response.isSuccessful) {
-                response.body()?.let { _state.value = State.Loaded(it) }
-            }
+        viewModelScope.launch (exHandler + Dispatchers.Main.immediate) {
+            try {
+                val response: Response<List<MainActivity.Adapter.Item>> = Repository.getPosts()
+                if(response.isSuccessful) {
+                    response.body()?.let { _state.value = State.Loaded(it) }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+        }
+
+
+
         }
     }
 }

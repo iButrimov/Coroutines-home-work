@@ -50,24 +50,50 @@ class MainActivity : AppCompatActivity() {
 
             fun bind(item: Item) {
                 binding.apply {
-                    titleTV.text = item.title
-                    bodyTV.text = item.body
+                    titleTV.text = item.temp.toString()
+                    bodyTV.text = item.pressure.toString()
                 }
             }
         }
 
         data class Item(
+
+                @SerializedName("temp")
+                val temp: Double,
+                @SerializedName("pressure")
+                val pressure: Int,
+                @SerializedName("humidity")
+                val humidity: Int,
+                @SerializedName("temp_min")
+                val temp_min: Double,
+                @SerializedName("temp_max")
+                val temp_max: Double
+
+                 /*
+                @SerializedName("id")
+                val id: Int,
+                @SerializedName("main")
+                val main: String,
+                @SerializedName("description")
+                val description: String,
+                @SerializedName("icon")
+                val icon: String,
+                  */
+                )
+
+        /*
             @SerializedName("id")
             val id: Long,
             @SerializedName("title")
             val title: String,
             @SerializedName("body")
             val body: String
-        )
+
+             */
 
         object DiffCallback : DiffUtil.ItemCallback<Item>() {
             override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.temp == newItem.temp
             }
 
             override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {

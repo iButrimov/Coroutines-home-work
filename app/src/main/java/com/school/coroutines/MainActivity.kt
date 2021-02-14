@@ -1,8 +1,12 @@
 package com.school.coroutines
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
@@ -18,6 +22,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (checkConnection()) {
+            Toast.makeText(this, "Internet is connected", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Internet is not connected", Toast.LENGTH_SHORT).show()
+        }
+
         val adapter = Adapter()
         ActivityMainBinding.inflate(layoutInflater).apply {
             setContentView(root)
@@ -27,14 +38,44 @@ class MainActivity : AppCompatActivity() {
                     State.Loading -> root.isRefreshing = true
                     is State.Loaded -> {
                         root.isRefreshing = false
-                        adapter.submitList(state.content)
+                        //adapter.submitList(state.content)
+                        adapter.submitList(listOf(state.content))
                     }
                 }
             }
-            //root.setOnRefreshListener { viewModel.processAction(Action.RefreshData) }
             root.setOnRefreshListener { viewModel.refreshData() }
         }
     }
+
+    private fun checkConnection():Boolean {
+        val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo: NetworkInfo? = connMgr.activeNetworkInfo
+        return networkInfo?.isConnected == true
+    }
+
+    /*
+    //second way to check connection
+
+    private fun checkConnection() {
+        var isWifiConn: Boolean = false
+        var isMobileConn: Boolean = false
+
+        val connectivityManager: ConnectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        connectivityManager.allNetworks.forEach { network ->
+            connectivityManager.getNetworkInfo(network)?.apply {
+                if (type == ConnectivityManager.TYPE_WIFI) {
+                    isWifiConn = isWifiConn or isConnected
+                }
+                if (type == ConnectivityManager.TYPE_MOBILE) {
+                    isMobileConn = isMobileConn or isConnected
+                }
+            }
+        }
+        Toast.makeText(this, "Wifi connected: $isWifiConn", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Mobile connected: $isMobileConn", Toast.LENGTH_SHORT).show()
+    }
+    */
 
     class Adapter : ListAdapter<Adapter.Item, Adapter.Holder>(DiffCallback) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -50,50 +91,37 @@ class MainActivity : AppCompatActivity() {
 
             fun bind(item: Item) {
                 binding.apply {
-                    titleTV.text = item.temp.toString()
-                    bodyTV.text = item.pressure.toString()
+                    titleTV.text = item.name
+                    bodyTV.text = item.main.temp.toString()
                 }
             }
         }
 
         data class Item(
-
-                @SerializedName("temp")
-                val temp: Double,
-                @SerializedName("pressure")
-                val pressure: Int,
-                @SerializedName("humidity")
-                val humidity: Int,
-                @SerializedName("temp_min")
-                val temp_min: Double,
-                @SerializedName("temp_max")
-                val temp_max: Double
-
-                 /*
-                @SerializedName("id")
-                val id: Int,
+                @SerializedName("name")
+                val name: String,
                 @SerializedName("main")
-                val main: String,
-                @SerializedName("description")
-                val description: String,
-                @SerializedName("icon")
-                val icon: String,
-                  */
-                )
-
-        /*
-            @SerializedName("id")
-            val id: Long,
-            @SerializedName("title")
-            val title: String,
-            @SerializedName("body")
-            val body: String
-
-             */
+                val main: Main
+        ) {
+            data class Main(
+                    @SerializedName("temp")
+                    val temp: Double,
+                    @SerializedName("feels_like")
+                    val feels_like: Double,
+                    @SerializedName("temp_min")
+                    val temp_min: Double,
+                    @SerializedName("temp_max")
+                    val temp_max: Double,
+                    @SerializedName("pressure")
+                    val pressure: Int,
+                    @SerializedName("humidity")
+                    val humidity: Int,
+            )
+        }
 
         object DiffCallback : DiffUtil.ItemCallback<Item>() {
             override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-                return oldItem.temp == newItem.temp
+                return oldItem.main == newItem.main
             }
 
             override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {

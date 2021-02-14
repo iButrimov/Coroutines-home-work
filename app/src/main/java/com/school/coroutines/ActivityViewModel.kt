@@ -23,18 +23,11 @@ class ActivityViewModel : ViewModel() {
             //_state.value = State.Loaded(emptyList())
         }
 
-        viewModelScope.launch (exHandler + Dispatchers.Main.immediate) {
-            try {
-                val response: Response<List<MainActivity.Adapter.Item>> = Repository.getPosts()
-                if(response.isSuccessful) {
-                    response.body()?.let { _state.value = State.Loaded(it) }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-        }
-
-
-
+        viewModelScope.launch(exHandler + Dispatchers.Main.immediate) {
+            val response: Response<MainActivity.Adapter.Item> = Repository.getPosts()
+            if (response.isSuccessful) {
+                response.body()?.let { _state.value = State.Loaded(it) }
+            }
         }
     }
 }
